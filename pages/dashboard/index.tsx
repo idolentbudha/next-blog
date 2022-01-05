@@ -40,9 +40,9 @@ interface LinkItemProps {
   icon: IconType;
 }
 const LinkItems: Array<LinkItemProps> = [
-  { name: "Home", icon: FiHome },
-  { name: "Trending", icon: FiTrendingUp },
-  { name: "Explore", icon: FiCompass },
+  // { name: "Home", icon: FiHome },
+  { name: "My Blogs", icon: FiTrendingUp },
+  { name: "Create", icon: FiCompass },
   { name: "Favourites", icon: FiStar },
   { name: "Settings", icon: FiSettings },
 ];
@@ -99,7 +99,7 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
     >
       <Flex h="20" alignItems="center" mx="8" justifyContent="space-between">
         <Text fontSize="2xl" fontFamily="monospace" fontWeight="bold">
-          Logo
+          nXt-Blog
         </Text>
         <CloseButton display={{ base: "flex", md: "none" }} onClick={onClose} />
       </Flex>
