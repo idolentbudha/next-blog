@@ -11,11 +11,14 @@ import {
   Heading,
   Text,
   useColorModeValue,
+  useToast,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import axios from "axios";
 
 export default function SimpleCard() {
+  const toast = useToast();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [status, setStatus] = useState<"IDLE" | "LOADING" | "ERROR" | "READY">(
@@ -25,14 +28,25 @@ export default function SimpleCard() {
   const handleFormSubmit = async () => {
     //handle form submit
     setStatus("LOADING");
+
     try {
-    } catch (error) {}
-    const response = await axios.post("/api/login", {
-      email,
-      password,
-    });
-    const { data, status } = response;
-    console.log("response:", response);
+      const response = await axios.post("/api/login", {
+        email,
+        password,
+      });
+      const { data, status } = response;
+      console.log("response:", response);
+    } catch (error) {
+      toast({
+        title: "Opps,Something went wrong",
+        description: "Please check your internet connection",
+        status: "error",
+        duration: 9000,
+        isClosable: true,
+        position: "top",
+      });
+    }
+
     // console.log(response());
   };
 

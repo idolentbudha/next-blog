@@ -11,15 +11,19 @@ export default function handler(
   res: NextApiResponse<Data>
 ) {
   const { query, method, body } = req;
+  let response: any = { status: false, message: "something went wrong" };
 
   switch (method) {
     case "POST":
       const { email, password } = body;
+
       // Get data from your database
       dbCall(email, password, (err: any, data: any) => {
         if (err) {
-          res.status(500).end(`Internal server error`);
+          response["message"] = err;
+          res.json(response);
         }
+        response = { status: true, message: "login successfull" };
         res.status(200).json(data);
       });
 
@@ -38,11 +42,11 @@ const dbCall = async (email: string, password: string, callback: Function) => {
     });
     console.log("user:", user);
 
-    if (!user) {
-      callback("invalid user", null);
+    if (user) {
+      if (user.password === password) callback(null, user);
     }
 
-    callback(null, user);
+    callback("invalid user", null);
   } catch (error) {
     callback(error, null);
   }
