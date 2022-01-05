@@ -21,10 +21,12 @@ export default function handler(
       dbCall(email, password, (err: any, data: any) => {
         if (err) {
           response["message"] = err;
-          res.json(response);
+          res.status(422).json(response);
+          return;
         }
         response = { status: true, message: "login successfull" };
         res.status(200).json(data);
+        return;
       });
 
       break;

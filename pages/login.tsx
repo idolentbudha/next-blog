@@ -15,6 +15,7 @@ import {
 } from "@chakra-ui/react";
 import { useState } from "react";
 import axios from "axios";
+import Router from "next/router";
 
 export default function SimpleCard() {
   const toast = useToast();
@@ -35,19 +36,35 @@ export default function SimpleCard() {
         password,
       });
       const { data, status } = response;
-      console.log("response:", response);
-    } catch (error) {
+      console.log("status:", status, data);
+      if (status === 200) {
+        Router.push("/dashboard");
+        // setStatus("IDLE");
+        return;
+      }
+      // console.log("response:", response);
       toast({
-        title: "Opps,Something went wrong",
-        description: "Please check your internet connection",
+        title: "Invalid User",
+        // description: "Please check your internet connection",
         status: "error",
-        duration: 9000,
+        duration: 2000,
+        isClosable: true,
+        position: "top",
+      });
+      setStatus("IDLE");
+    } catch (error) {
+      setStatus("IDLE");
+
+      console.log(error);
+      toast({
+        title: "Invalid Data",
+        // description: "Please check your internet connection",
+        status: "error",
+        duration: 2000,
         isClosable: true,
         position: "top",
       });
     }
-
-    // console.log(response());
   };
 
   return (
