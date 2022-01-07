@@ -13,13 +13,17 @@ import {
   Text,
   useColorModeValue,
   Link,
-  Radio, RadioGroup
+  Radio,
+  RadioGroup,
+  useToast,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import axios from "axios";
+import Router from "next/router";
 
 export default function SignupCard() {
+  const toast = useToast();
   const [showPassword, setShowPassword] = useState(false);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -32,12 +36,37 @@ export default function SignupCard() {
   const handleSubmit = async () => {
     try {
       const response = await axios.post("/api/register", {
-        firstName, lastName, email, password, address, middleName, role
+        firstName,
+        lastName,
+        email,
+        password,
+        address,
+        middleName,
+        role,
       });
-      const { data } = response;
-    } catch (error) {throw error}
-    
-  }
+      const { status, data } = response;
+      if (status === 200 || status == 201) {
+        toast({
+          title: "User created",
+          // description: "Please check your internet connection",
+          status: "success",
+          duration: 2000,
+          isClosable: true,
+          position: "top",
+        });
+        Router.push("/login");
+      }
+    } catch (error) {
+      toast({
+        title: "Invalid Data",
+        // description: "Please check your internet connection",
+        status: "error",
+        duration: 2000,
+        isClosable: true,
+        position: "top",
+      });
+    }
+  };
   return (
     <Flex
       minH={"100vh"}
@@ -65,46 +94,58 @@ export default function SignupCard() {
               <Box>
                 <FormControl id="firstName" isRequired>
                   <FormLabel>First Name</FormLabel>
-                  <Input type="text" 
+                  <Input
+                    type="text"
                     onChange={(e) => setFirstName(e.target.value)}
-                    value={firstName}/>
+                    value={firstName}
+                  />
                 </FormControl>
               </Box>
               <Box>
                 <FormControl id="middleName">
                   <FormLabel>Middle Name</FormLabel>
-                  <Input type="text" 
+                  <Input
+                    type="text"
                     onChange={(e) => setMiddleName(e.target.value)}
-                    value={middleName}/>
+                    value={middleName}
+                  />
                 </FormControl>
               </Box>
               <Box>
                 <FormControl id="lastName">
                   <FormLabel>Last Name</FormLabel>
-                  <Input type="text" 
+                  <Input
+                    type="text"
                     onChange={(e) => setLastName(e.target.value)}
-                    value={lastName}/>
+                    value={lastName}
+                  />
                 </FormControl>
               </Box>
             </HStack>
             <FormControl id="email" isRequired>
               <FormLabel>Email address</FormLabel>
-              <Input type="email" 
+              <Input
+                type="email"
                 onChange={(e) => setEmail(e.target.value)}
-                value={email}/>
+                value={email}
+              />
             </FormControl>
             <FormControl id="address" isRequired>
               <FormLabel>Address</FormLabel>
-              <Input type="addresss" 
+              <Input
+                type="addresss"
                 onChange={(e) => setAddress(e.target.value)}
-                value={address}/>
+                value={address}
+              />
             </FormControl>
             <FormControl id="password" isRequired>
               <FormLabel>Password</FormLabel>
               <InputGroup>
-                <Input type={showPassword ? "text" : "password"} 
+                <Input
+                  type={showPassword ? "text" : "password"}
                   onChange={(e) => setPassword(e.target.value)}
-                  value={password}/>
+                  value={password}
+                />
                 <InputRightElement h={"full"}>
                   <Button
                     variant={"ghost"}
@@ -114,13 +155,17 @@ export default function SignupCard() {
                   >
                     {showPassword ? <ViewIcon /> : <ViewOffIcon />}
                   </Button>
-                </InputRightElement>  
+                </InputRightElement>
               </InputGroup>
             </FormControl>
             <RadioGroup onChange={setRole} value={role}>
-              <Stack direction='row'>
-                <Radio name="role" id="1" value='USER'>User</Radio>
-                <Radio name="role" id="2" value='ADMIN'>Admin</Radio>
+              <Stack direction="row">
+                <Radio name="role" id="1" value="USER">
+                  User
+                </Radio>
+                <Radio name="role" id="2" value="ADMIN">
+                  Admin
+                </Radio>
               </Stack>
             </RadioGroup>
             <Stack spacing={10} pt={2}>

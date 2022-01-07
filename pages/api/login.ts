@@ -33,6 +33,7 @@ export default function handler(
     default:
       //   res.setHeader("Allow", ["GET", "PUT"]);
       res.status(405).end(`Method ${method} Not Allowed`);
+      return;
   }
 }
 

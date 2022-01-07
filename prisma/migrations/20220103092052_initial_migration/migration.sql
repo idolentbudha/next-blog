@@ -10,7 +10,7 @@ CREATE TABLE `Users` (
     `email` VARCHAR(191) NOT NULL UNIQUE,
     `address` VARCHAR(191) NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-    `updatedAt` DATETIME(3) ,
+    `updatedAt` DATETIME(3) NULL DEFAULT CURRENT_TIMESTAMP(3) ,
 
     UNIQUE INDEX `user_email`(`email`),
     PRIMARY KEY (`id`)

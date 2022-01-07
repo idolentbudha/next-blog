@@ -1,5 +1,6 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
+import { mysqlDateTime } from "../../utils/helpers";
 import prisma from "../../utils/prisma";
 
 type Data = {
@@ -11,17 +12,18 @@ export default function handler(
   res: NextApiResponse<Data>
 ) {
   const { query, method, body } = req;
-//   console.log(body)
+  //   console.log(body)
   switch (method) {
     case "POST":
-        // console.log(body)
+      console.log("body:", body);
       // Get data from your database
       dbCall(body, (err: any, data: any) => {
-        console.log(body)
         if (err) {
-          res.status(500).end(err);
+          res.status(500).send(err);
+          return;
         }
         res.status(200).json(data);
+        return;
       });
 
       break;
@@ -31,21 +33,40 @@ export default function handler(
   }
 }
 
-interface Payload {email:string , password:string, firstName:string, lastName:string, middleName:string, address:string, role:any}
+interface Payload {
+  email: string;
+  password: string;
+  firstName: string;
+  lastName: string;
+  middleName: string;
+  address: string;
+  role: "USER" | "ADMIN";
+}
 
-const dbCall = async (data:Payload, callback: Function) => {
+const dbCall = async (payload: Payload, callback: Function) => {
   try {
-        const {email , password, firstName, lastName, address, middleName, role} = data;
-        const user = await prisma.user.create({
-            data: { email: email , password: password, firstName: firstName, lastName: lastName, middleName: middleName, address: address , role: role,updatedAt: '2022-02-01 10:00:00'},
-        });
-        console.log(user)
+    const { email, password, firstName, lastName, address, middleName, role } =
+      payload;
+    const user = await prisma.user.create({
+      data: {
+        email: email,
+        password: password,
+        firstName: firstName,
+        lastName: lastName,
+        middleName: middleName,
+        address: address,
+        role: role,
+        updatedAt: new Date(),
+      },
+    });
+    console.log("user:", user);
     if (!user) {
-      callback("invalid user", null);   
+      callback("invalid user", null);
     }
 
     callback(null, user);
   } catch (error) {
+    console.log("error:", error);
     callback(error, null);
   }
 };
