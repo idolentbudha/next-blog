@@ -1,6 +1,6 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
-import { mysqlDateTime } from "../../utils/helpers";
+import { MakeHash } from "../../utils/hash";
 import prisma from "../../utils/prisma";
 
 type Data = {
@@ -50,7 +50,7 @@ const dbCall = async (payload: Payload, callback: Function) => {
     const user = await prisma.user.create({
       data: {
         email: email,
-        password: password,
+        password: await MakeHash(password),
         firstName: firstName,
         lastName: lastName,
         middleName: middleName,

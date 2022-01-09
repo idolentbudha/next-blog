@@ -1,5 +1,6 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
+import { CheckHash, MakeHash } from "../../utils/hash";
 import prisma from "../../utils/prisma";
 
 type Data = {
@@ -46,7 +47,8 @@ const dbCall = async (email: string, password: string, callback: Function) => {
     console.log("user:", user);
 
     if (user) {
-      if (user.password === password) callback(null, user);
+      const isValidHash = await CheckHash(password, user.password);
+      if (isValidHash) callback(null, user);
     }
 
     callback("invalid user", null);
